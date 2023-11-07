@@ -47,7 +47,7 @@ sidebarmenu.addEventListener("click",function(){
         // flexVideoContainer.style.gridTemplateColumns = "1fr 1fr 1fr 1fr 1fr 1fr";
         flexItem.forEach(ele =>{
             console.log(ele);
-            ele.style.width="calc(25% - 10px)";
+            ele.style.width="calc(25% - 20px)";
         })
       
     }else{
@@ -66,3 +66,10 @@ sidebarmenu.addEventListener("click",function(){
     
 })
 
+const modeToggle = document.getElementById('modeToggle');
+const body = document.body;
+
+function toggleDarkMode(){
+    body.classList.toggle('dark-mode');
+}
+modeToggle.addEventListener('click',toggleDarkMode);

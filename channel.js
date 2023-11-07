@@ -1,12 +1,26 @@
+// const baseUrl = `https://www.googleapis.com/youtube/v3`;
+// const apiKey = `AIzaSyBh8h1bK9Gmdo-XTdXg4q4T8mLLUgcPsJw`;
+
+
+
+
+const bannerdiv = document.getElementById("banner");
+console.log(bannerdiv);
 const profileImage = document.getElementById("profileImage");
 const channelName = document.getElementsByClassName("channelName")[0];
 const channelViews = document.getElementsByClassName("channelViews")[0];
 
+const chflexContainer = document.getElementsByClassName("flex-video-container")[0];
+//channel id-----------------------------------
+const singleChannelId = sessionStorage.getItem('singleChannelId');
+const ChannelId=singleChannelId;
 
 
 async function channelDetails(){
-    const channelId=`UCsBjURrPoezykLs9EqgamOA`;
-    const channelurl = `${baseUrl}/channels?key=${apiKey}&part=snippet,contentDetails,statistics&id=${channelId}`;
+    // const ChannelId=`UCWOA1ZGywLbqmigxE4Qlvuw`;
+    const baseUrl = `https://www.googleapis.com/youtube/v3`;
+    const apiKey = `AIzaSyBh8h1bK9Gmdo-XTdXg4q4T8mLLUgcPsJw`;
+    const channelurl = `${baseUrl}/channels?key=${apiKey}&part=snippet,contentDetails,statistics&id=${ChannelId}`;
     const channelresponse = await fetch(channelurl,{method:"GET"});
     const channelresult = await channelresponse.json();
 
@@ -14,6 +28,26 @@ async function channelDetails(){
     const channelsnippet = channelresult.items[0].snippet;
     const channelstatistics = channelresult.items[0].statistics;
     console.log(channelsnippet.thumbnails.high.url);
+
+     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>fetching channel banner>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+     const apiUrl = `https://www.googleapis.com/youtube/v3/channels?part=brandingSettings&id=${ChannelId}&key=${apiKey}`;
+
+     try {
+         const response = await fetch(apiUrl);
+         const data = await response.json();
+         console.log(data.items[0].brandingSettings.image.bannerExternalUrl);
+         const banner = data.items[0].brandingSettings.image.bannerExternalUrl;
+        //  const bannerImage = data.items[0]?.brandingSettings?.image?.bannerExternalUrl;
+         // return bannerImage;
+        bannerdiv.src = `${banner}`;
+     } catch (error) {
+         console.error('Error fetching banner image:', error);
+         // return null;
+     }
+     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.>>>>>>
+ 
+     
+
     const ImageTag = document.createElement("div");
     ImageTag.innerHTML = `
     <img src="${channelsnippet.thumbnails.high.url}" style="border-radius: 50%;width: 140px;height: 140px;">
@@ -24,7 +58,35 @@ async function channelDetails(){
     channelViews.innerHTML=`
     <span>${channelsnippet.customUrl}</span><span>${channelstatistics.subscriberCount} subscribers</span><span>${channelstatistics.videoCount}  videos</span>
                                              
-    `
-}
+    `;
+      //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^fetch channel videos^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    const maxResults=20;
+    const videosApiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&part=snippet&type=video&channelId=${ChannelId}&maxResults=${maxResults}`;
+    const chVideoResponse = await fetch(videosApiUrl,{method:"GET"});
+    const chVideoResult = await chVideoResponse.json();
+    console.log(chVideoResult.items);
+    const videos=chVideoResult.items;
+    videos.forEach(video=>{
+        videoId = video.id.videoId;
+        const {snippet}=video;
+
+        const chflexItem = document.createElement("div");
+        chflexItem.innerHTML=`
+            <div class="other-videos" style="padding: 0px;">
+                <div>
+                    <div><img src="${snippet.thumbnails.high.url}" style="height:140px;width:250px; border-radius: 15px;"></div>
+                </div>
+                <div style="display: flex;flex-direction: column;gap:4px;padding-top: 8px;">
+                    <div class="other-video-title">${snippet.title}</div>
+                    <div class="other-video-channel">${snippet.channelTitle}</div>
+                    <div class="other-video-channel">23M views * ${snippet.publishTime}</div>
+                </div>
+            </div>
+        `;
+        chflexContainer.appendChild(chflexItem);
+        chflexItem.className="flex-video-item";
+    })
+
+};
 
 channelDetails();
