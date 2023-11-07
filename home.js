@@ -1,7 +1,7 @@
 const baseUrl = `https://www.googleapis.com/youtube/v3`;
-// const apiKey = `AIzaSyBh8h1bK9Gmdo-XTdXg4q4T8mLLUgcPsJw`;
+const apiKey = `AIzaSyBh8h1bK9Gmdo-XTdXg4q4T8mLLUgcPsJw`;
 
-const apiKey = `AIzaSyCdopOmumoijAacpleFFNOszQRI_e2BeJE`;
+//const apiKey = `AIzaSyCdopOmumoijAacpleFFNOszQRI_e2BeJE`;
 // const apiKey = "AIzaSyC0lDc68z2wZ19AT7_ST7RQ2833ZIm1IyE" ;
 const flexContainer = document.getElementsByClassName("flex-container")[0];
 const searchButton = document.getElementById("search-button");
